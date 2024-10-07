@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://cahbolmo7tdix"]
+
+[ext_resource type="Script" path="res://scripts/entity/entity.gd" id="1_61r8i"]
+[ext_resource type="Script" path="res://scripts/field/field.gd" id="1_c6ail"]
+[ext_resource type="Texture2D" uid="uid://dbujxloy6oeig" path="res://scripts/field/default_field_icon.svg" id="2_dgeu0"]
+
+[sub_resource type="GDScript" id="GDScript_hprhw"]
+script/source = "extends Node
+
+@export var properties: Entity  ## Assuming Entity is a resource class you want to save
+
+func _ready():
+	var dir = DirAccess.open(\"user://\")
+	
+	# Check if the directory exists and create it if not
+	if not dir.dir_exists(\"user://saved_entities\"):
+		dir.make_dir(\"user://saved_entities\")
+	
+	# Save the properties resource to a file
+	var save_path = \"user://saved_entities/entity.tres\"  # Specify a full file name
+	var error = ResourceSaver.save(properties, save_path)
+	
+	if error == OK:
+		print(\"Entity saved successfully at: \", save_path)
+	else:
+		print(\"Failed to save entity. Error code: \", error)
+"
+
+[sub_resource type="Resource" id="Resource_vf565"]
+resource_local_to_scene = true
+resource_name = "AC"
+script = ExtResource("1_c6ail")
+icon = ExtResource("2_dgeu0")
+name = "AC"
+type = 0
+value_string = ""
+
+[sub_resource type="Resource" id="Resource_v6oyy"]
+resource_local_to_scene = true
+resource_name = "Name"
+script = ExtResource("1_c6ail")
+icon = ExtResource("2_dgeu0")
+name = "Name"
+type = 0
+value_string = ""
+
+[sub_resource type="Resource" id="Resource_iwhv8"]
+script = ExtResource("1_61r8i")
+Properties = Array[ExtResource("1_c6ail")]([SubResource("Resource_vf565"), SubResource("Resource_v6oyy")])
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Node" type="Node" parent="."]
+script = SubResource("GDScript_hprhw")
+properties = SubResource("Resource_iwhv8")
